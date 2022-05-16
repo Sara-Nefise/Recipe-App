@@ -27,7 +27,7 @@ abstract class ThemeManager {
         appBarTheme: AppBarTheme(
             backgroundColor: theme.colors.appBarColor,
             elevation: 0.0,
-            iconTheme: const IconThemeData(color: Colors.black, size: 33)),
+            iconTheme: const IconThemeData(color: Colors.black, size: 25)),
         colorScheme: theme.colors.colorScheme,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: TextButton.styleFrom(
@@ -46,6 +46,7 @@ abstract class ThemeManager {
           fillColor: Colors.white,
           filled: true,
         ),
+        
       );
 }
 

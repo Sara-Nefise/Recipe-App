@@ -6,6 +6,7 @@ import '../../../core/constant/strings/signUp_string.dart';
 import '../../../core/init/network/firbase_auth.dart';
 import '../../../product/widgets/ElevatedButton.dart';
 import '../../../product/widgets/textFeild.dart';
+import '../../../product/widgets/warningToast.dart';
 import '../../PasswordRecovery/view/passwordRecovery_screen.dart';
 import '../../SignIn/view/signIn_screen.dart';
 import '../../VerificationCode/VerificationCode_screen.dart';
@@ -44,12 +45,12 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                })),
+        // appBar: AppBar(
+        //     leading: IconButton(
+        //         icon: const Icon(Icons.arrow_back),
+        //         onPressed: () {
+        //           Navigator.pop(context);
+        //         })),
         body: SingleChildScrollView(
           child: Padding(
               padding: const EdgeInsets.only(
@@ -78,7 +79,7 @@ class _SignUpPageState extends State<SignUpPage> {
         key: _formKey,
         child: Column(
           children: [
-            CutsomTextformField(
+            CutsomTextformField(isdiscription: false,
                 codeController: _emailController,
                 focusNode: _emailNode,
                 labelText: SignUpString.emailText,
@@ -87,7 +88,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 textInputType: TextInputType.emailAddress,
                 isPassword: false),
             context.emptySizedHeightBoxNormal,
-            CutsomTextformField(
+            CutsomTextformField(isdiscription: false,
               codeController: _passwordController,
               focusNode: _passwordNode,
               labelText: SignUpString.passwordText,
@@ -164,7 +165,9 @@ class _SignUpPageState extends State<SignUpPage> {
     return MyElevatedButton(
       onpressedFun: () {
         if (_emailController.text.isNotEmpty &&
-            _passwordController.text.isNotEmpty) {
+            _passwordController.text.isNotEmpty &&
+            sixChars == true &&
+            number == true) {
           _authService
               .createPerson(
             _emailController.text,
@@ -184,24 +187,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       )),
             );
           }).catchError((error) {
-            _warningToast(error.toString());
+            warningToast(error.toString());
           });
         } else {
-          _warningToast('DietText.emptyText');
+          warningToast('DietText.emptyText');
         }
       },
       buttonText: SignUpString.signUpText,
     );
-  }
-
-  Future<bool?> _warningToast(String text) {
-    return Fluttertoast.showToast(
-        msg: text,
-        timeInSecForIosWeb: 2,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: AppColors().red,
-        textColor: AppColors().white,
-        fontSize: 14);
   }
 }

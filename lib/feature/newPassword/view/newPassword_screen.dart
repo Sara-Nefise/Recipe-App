@@ -39,31 +39,30 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: Icon(Icons.arrow_back),
-          actions: [],
-        ),
+        // appBar: AppBar(
+        //   leading: Icon(Icons.arrow_back),
+        //   actions: [],
+        // ),
         body: Container(
             child: Padding(
-          padding:
-              const EdgeInsets.only(top: 16, bottom: 16, right: 30, left: 30),
-          child: SingleChildScrollView(
-              child: Column(
-            children: [
-              SizedBox(height: context.dynamicHeight(0.1)),
-              Text(NewPassword.resetText, style: context.textTheme.headline3),
-              context.emptySizedHeightBoxLow,
-              Text(
-                NewPassword.passwordTitleText,
-                textAlign: TextAlign.center,
-                style: context.textTheme.bodyText1
-                    ?.copyWith(color: AppColors().darkGrey),
-              ),
-              context.emptySizedHeightBoxNormal,
-              _formFeild(),
-            ],
-          )),
-        )));
+      padding: const EdgeInsets.only(top: 16, bottom: 16, right: 30, left: 30),
+      child: SingleChildScrollView(
+          child: Column(
+        children: [
+          SizedBox(height: context.dynamicHeight(0.1)),
+          Text(NewPassword.resetText, style: context.textTheme.headline3),
+          context.emptySizedHeightBoxLow,
+          Text(
+            NewPassword.passwordTitleText,
+            textAlign: TextAlign.center,
+            style: context.textTheme.bodyText1
+                ?.copyWith(color: AppColors().darkGrey),
+          ),
+          context.emptySizedHeightBoxNormal,
+          _formFeild(),
+        ],
+      )),
+    )));
   }
 
   _formFeild() {
@@ -72,6 +71,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
         child: Column(
           children: [
             CutsomTextformField(
+              isdiscription: false,
               codeController: _passwordController,
               focusNode: _passwordNode,
               labelText: SignUpString.passwordText,

@@ -30,11 +30,32 @@ class AuthService {
       await _firestore.collection("User").doc(user.user?.uid ?? "").set({
         'email': email,
       });
+      try {
+        await sendVerificationEmail();
+        return user.user;     } catch (e) {
+        print("An error occured while trying to send email        verification");
+        print(e.toString());
+     }
+      // if (!user.user!.emailVerified) {
+      //   sendVerificationEmail();
+      // }
 
-      return user.user;
+      // return user.user;
     } on FirebaseAuthException catch (e) {
       throw determineError(e);
     }
+  }
+
+  Future<void> sendVerificationEmail() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && !user.emailVerified) {
+      await user.sendEmailVerification();
+    }
+  }
+
+  @override
+  Future<void> resetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
   }
 
   Future<UserCredential> signInWithGoogle() async {
@@ -46,7 +67,6 @@ class AuthService {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
-
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }

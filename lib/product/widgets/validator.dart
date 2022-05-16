@@ -1,7 +1,6 @@
 import 'package:flutter/src/widgets/framework.dart';
 
 class Validator {
-
   String? validateEmail({required String? email}) {
     if (email == null) {
       return null;
@@ -12,19 +11,22 @@ class Validator {
     if (email.isEmpty) {
       return 'Please Enter Your Email';
     } else if (!emailReq.hasMatch(email)) {
-      return 'Please Correct Email';
+      return 'Please Enter Valid Email';
     }
     return null;
   }
 
-  String? validatePassword({required String? password}) {
+  String? validatePassword(
+      {required String? password, bool? six, bool? number}) {
     if (password == null) {
       return null;
     }
 
     if (password.isEmpty) {
       return 'Please Enter Your Password';
-    } else if (password.length < 6) {
+    } else if (password.length <= 6 &&
+        password.contains(RegExp(r'\d'), 0) == false) {
       return 'enter at least 7 words';
     }
-}}
+  }
+}

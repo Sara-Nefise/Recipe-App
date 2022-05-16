@@ -1,10 +1,14 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kartal/kartal.dart';
 import 'package:recipeapp/core/init/theme/color/color_theme.dart';
-import '../../product/widgets/checkBox.dart';
-import '../../product/widgets/counter.dart';
 
 import '../../core/constant/strings/verication_string.dart';
+import '../../core/init/network/firbase_auth.dart';
+import '../../product/widgets/counter.dart';
+import '../../product/widgets/warningToast.dart';
 
 class VerificationPage extends StatefulWidget {
   final VoidCallback onpressedFun;
@@ -17,35 +21,21 @@ class VerificationPage extends StatefulWidget {
 class _VerificationPageState extends State<VerificationPage>
     with TickerProviderStateMixin {
   late AnimationController controller;
+  User? user = FirebaseAuth.instance.currentUser;
+  late Timer timer;
   Duration get duration => controller.duration! * controller.value;
   bool get expired => duration.inSeconds == 0;
   @override
-  void initState() {
-    controller = AnimationController(
-      vsync: this,
-      duration: const Duration(minutes: 1),
-    );
-    controller.reverse(from: 1);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                controller.dispose();
-                Navigator.pop(context);
-              }),
-        ),
+        // appBar: AppBar(
+        //   leading: IconButton(
+        //       icon: Icon(Icons.arrow_back),
+        //       onPressed: () {
+        //         controller.dispose();
+        //         Navigator.pop(context);
+        //       }),
+        // ),
         body: Container(
           width: double.infinity,
           height: double.infinity,
@@ -65,8 +55,8 @@ class _VerificationPageState extends State<VerificationPage>
                       style: context.textTheme.bodyText1
                           ?.copyWith(color: AppColors().darkGrey),
                     ),
-                    context.emptySizedHeightBoxNormal,
-                    SecondTrial(),
+                    //context.emptySizedHeightBoxNormal,
+                    // SecondTrial(),
                     context.emptySizedHeightBoxNormal,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -91,18 +81,52 @@ class _VerificationPageState extends State<VerificationPage>
                         width: double.infinity,
                         height: 55,
                         child: ElevatedButton(
-                            onPressed: (duration.inSeconds == 00 &&
-                                    duration.inMinutes == 00)
-                                ? () {
-                                    setState(() {
-                                      controller.reverse(from: 1);
-                                    });
-                                  }
-                                : null,
+                            onPressed: _disablebutton(),
                             child: Text(Verification.resendText)))
                   ],
                 )),
           ),
         ));
+  }
+
+  Future<void> checkEmailVerified() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    await user?.reload();
+    if (user!.emailVerified) {
+      controller.dispose();
+      timer.cancel;
+      warningToast('done');
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    AuthService().sendVerificationEmail();
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(minutes: 1),
+    );
+    controller.reverse(from: 1);
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      checkEmailVerified();
+    });
+  }
+
+  _disablebutton() {
+    return (duration.inSeconds == 00 && duration.inMinutes == 00)
+        ? () {
+            setState(() {
+              controller.reverse(from: 1);
+              AuthService().sendVerificationEmail();
+            });
+          }
+        : null;
   }
 }

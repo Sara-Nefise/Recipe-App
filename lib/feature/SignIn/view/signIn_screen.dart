@@ -8,6 +8,7 @@ import '../../../core/init/network/firbase_auth.dart';
 import '../../../product/widgets/ElevatedButton.dart';
 import '../../../product/widgets/textFeild.dart';
 import '../../../product/widgets/warningToast.dart';
+import '../../HomePage/view/homePage_screen.dart';
 import '../../PasswordRecovery/view/passwordRecovery_screen.dart';
 import '../../SignUp/view/signUp_screen.dart';
 
@@ -64,7 +65,7 @@ class _SignInPageState extends State<SignInPage> {
                 prefixIcon: Icons.email,
                 suffixIcon: null,
                 textInputType: TextInputType.emailAddress,
-                isPassword: false),
+                isPassword: false, isdiscription: false,),
             context.emptySizedHeightBoxNormal,
             CutsomTextformField(
               codeController: _passwordController,
@@ -73,7 +74,7 @@ class _SignInPageState extends State<SignInPage> {
               prefixIcon: Icons.lock,
               suffixIcon: Icons.visibility,
               textInputType: TextInputType.visiblePassword,
-              isPassword: true,
+              isPassword: true,isdiscription: false,
             ),
             SizedBox(height: context.dynamicHeight(0.025)),
             _forgetPassword(),
@@ -148,21 +149,11 @@ class _SignInPageState extends State<SignInPage> {
               _passwordController.text,
             )
                 .then((value) {
-              warningToast('done');
-              // Navigator.pushAndRemoveUntil(
-              //     context,
-              //     MaterialPageRoute(builder: (context) =>  HomePage()),
-              //     (route) => false);
+             // warningToast('done');
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => HomePage()));
             }).catchError((error) {
-              if (error.toString().contains('invalid-email')) {
-                warningToast('DietText.loginWrongEmailText');
-              } else if (error.toString().contains('user-not-found')) {
-                warningToast('DietText.loginNoAccountText');
-              } else if (error.toString().contains('wrong-password')) {
-                warningToast('DietText.loginWrongPasswordText');
-              } else {
-                warningToast('DietText.errorText');
-              }
+              warningToast(error.toString());
             });
           } else {
             warningToast('DietText.emptyText');
